@@ -20,8 +20,6 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.10.2
-    env_file:
-      - ./env.sh
 
   babylondnode1:
     container_name: babylondnode1
@@ -38,12 +36,10 @@ services:
       - "9091:9090"
       - "2346:2345"
     volumes:
-      - ./.testnets/node1/babylond:/babylondhome:Z
+      - $TESTNET_PATH/node1/babylond:/babylondhome:Z
     networks:
       localnet:
         ipv4_address: 192.168.10.3
-    env_file:
-      - ./env.sh
 
   babylondnode2:
     container_name: babylondnode2
@@ -62,12 +58,10 @@ services:
       - "9092:9090"
       - "2347:2345"
     volumes:
-      - ./.testnets/node2/babylond:/babylondhome:Z
+      - $TESTNET_PATH/node2/babylond:/babylondhome:Z
     networks:
       localnet:
         ipv4_address: 192.168.10.4
-    env_file:
-      - ./env.sh
 
   babylondnode3:
     container_name: babylondnode3
@@ -86,12 +80,10 @@ services:
       - "9093:9090"
       - "2348:2345"
     volumes:
-      - ./.testnets/node3/babylond:/babylondhome:Z
+      - $TESTNET_PATH/node3/babylond:/babylondhome:Z
     networks:
       localnet:
         ipv4_address: 192.168.10.5
-    env_file:
-      - ./env.sh
 
   vgl-reporter:
     image: "tcf/bbl-vgl"
@@ -104,8 +96,6 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.10.6
-    env_file:
-      - ./env.sh
     environment:
       - METRICS_PORT=2112
 
@@ -120,8 +110,6 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.10.7
-    env_file:
-      - ./env.sh
     environment:
       - METRICS_PORT=2113
 
@@ -136,8 +124,6 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.10.8
-    env_file:
-      - ./env.sh
     environment:
       - METRICS_PORT=2114
 
@@ -152,8 +138,6 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.10.9
-    env_file:
-      - ./env.sh
     environment:
       - METRICS_PORT=2115
 
