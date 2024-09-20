@@ -1,0 +1,167 @@
+version: "3"
+
+services:
+  babylondnode0:
+    container_name: babylondnode0
+    image: "tcf/babylond"
+    command: >
+      babylond --home /babylondhome start --log_format 'plain' 2>&1 | tee /babylondhome/babylond.log
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "26656-26657:26656-26657"
+      - "1317:1317"
+      - "9090:9090"
+      - "2345:2345"
+    volumes:
+      - $TESTNET_PATH/node0/babylond:/babylondhome:Z
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.2
+    env_file:
+      - ./env.sh
+
+  babylondnode1:
+    container_name: babylondnode1
+    image: "tcf/babylond"
+    command: >
+      babylond --home /babylondhome start --log_format 'plain' 2>&1 | tee /babylondhome/babylond.log
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "26666-26667:26656-26657"
+      - "1318:1317"
+      - "9091:9090"
+      - "2346:2345"
+    volumes:
+      - ./.testnets/node1/babylond:/babylondhome:Z
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.3
+    env_file:
+      - ./env.sh
+
+  babylondnode2:
+    container_name: babylondnode2
+    image: "tcf/babylond"
+    environment:
+      - LOG=${LOG:-babylond.log}
+    command: >
+      babylond --home /babylondhome start --log_format 'plain' 2>&1 | tee /babylondhome/babylond.log
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "26676-26677:26656-26657"
+      - "1319:1317"
+      - "9092:9090"
+      - "2347:2345"
+    volumes:
+      - ./.testnets/node2/babylond:/babylondhome:Z
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.4
+    env_file:
+      - ./env.sh
+
+  babylondnode3:
+    container_name: babylondnode3
+    image: "tcf/babylond"
+    environment:
+      - LOG=${LOG:-babylond.log}
+    command: >
+      babylond --home /babylondhome start --log_format 'plain' 2>&1 | tee /babylondhome/babylond.log
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "26686-26687:26656-26657"
+      - "1320:1317"
+      - "9093:9090"
+      - "2348:2345"
+    volumes:
+      - ./.testnets/node3/babylond:/babylondhome:Z
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.5
+    env_file:
+      - ./env.sh
+
+  vgl-reporter:
+    image: "tcf/bbl-vgl"
+    command: "vigilante reporter --config /vigilante/vigilante.yml --babylon-key-dir /babylond"
+    volumes:
+      - $TESTNET_PATH/bitcoin:/bitcoin
+      - $TESTNET_PATH/node0/babylond:/babylon
+      - $TESTNET_PATH/vigilante:/vigilante
+      - ./vigilante.yml:/vigilante/vigilante.yml
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.6
+    env_file:
+      - ./env.sh
+    environment:
+      - METRICS_PORT=2112
+
+  vgl-monitor:
+    image: "tcf/bbl-vgl"
+    command: "vigilante monitor --config /vigilante/vigilante.yml --genesis /babylon/config/genesis.json"
+    volumes:
+      - $TESTNET_PATH/bitcoin:/bitcoin
+      - $TESTNET_PATH/node0/babylond:/babylon
+      - $TESTNET_PATH/vigilante:/vigilante
+      - ./vigilante.yml:/vigilante/vigilante.yml
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.7
+    env_file:
+      - ./env.sh
+    environment:
+      - METRICS_PORT=2113
+
+  vgl-submitter:
+    image: "tcf/bbl-vgl"
+    command: "vigilante reporter --config /vigilante/vigilante.yml"
+    volumes:
+      - $TESTNET_PATH/bitcoin:/bitcoin
+      - $TESTNET_PATH/node0/babylond:/babylon
+      - $TESTNET_PATH/vigilante:/vigilante
+      - ./vigilante.yml:/vigilante/vigilante.yml
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.8
+    env_file:
+      - ./env.sh
+    environment:
+      - METRICS_PORT=2114
+
+  vgl-bstracker:
+    image: "tcf/bbl-vgl"
+    command: "vigilante reporter --config /vigilante/vigilante.yml"
+    volumes:
+      - $TESTNET_PATH/bitcoin:/bitcoin
+      - $TESTNET_PATH/node0/babylond:/babylon
+      - $TESTNET_PATH/vigilante:/vigilante
+      - ./vigilante.yml:/vigilante/vigilante.yml
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.9
+    env_file:
+      - ./env.sh
+    environment:
+      - METRICS_PORT=2115
+
+
+networks:
+  localnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.10.0/25

@@ -51,11 +51,11 @@ test-e2e:
 	go test -race -mod=readonly --failfast -timeout=25m -v $(PACKAGES_E2E) -count=1 --tags=e2e
 
 build-docker:
-	$(DOCKER) build --tag babylonlabs-io/vigilante -f Dockerfile \
+	$(DOCKER) build --tag tcf/bbl-vgl -f Dockerfile \
 		$(shell git rev-parse --show-toplevel)
 
 rm-docker:
-	$(DOCKER) rmi babylonlabs-io/vigilante 2>/dev/null; true
+	$(DOCKER) rmi tcf/bbl-vgl 2>/dev/null; true
 
 mocks:
 	mkdir -p $(MOCKS_DIR)

@@ -1,5 +1,5 @@
 ## Image for building
-FROM golang:1.23-alpine AS build-env
+FROM golang:1.21-alpine AS build-env
 
 
 # TARGETPLATFORM should be one of linux/amd64 or linux/arm64.
@@ -46,7 +46,7 @@ RUN addgroup --gid 1138 -S vigilante && adduser --uid 1138 -S vigilante -G vigil
 RUN apk add bash curl jq
 
 # Label should match your github repo
-LABEL org.opencontainers.image.source="https://github.com/babylonlabs-io/vigilante:${VERSION}"
+# LABEL org.opencontainers.image.source="https://github.com/babylonlabs-io/vigilante:${VERSION}"
 
 COPY --from=build-env /go/src/github.com/babylonlabs-io/vigilante/build/vigilante /bin/vigilante
 

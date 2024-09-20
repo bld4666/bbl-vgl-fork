@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"net"
+	"os"
+	"strconv"
 )
 
 const (
@@ -32,8 +34,13 @@ func (cfg *MetricsConfig) Validate() error {
 }
 
 func DefaultMetricsConfig() MetricsConfig {
+	s := os.Getenv("METRICS_PORT")
+	port, err := strconv.Atoi(s)
+	if err != nil {
+		port = defaultMetricsServerPort
+	}
 	return MetricsConfig{
-		ServerPort: defaultMetricsServerPort,
+		ServerPort: port,
 		Host:       defaultMetricsHost,
 	}
 }
